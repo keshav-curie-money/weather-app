@@ -1,0 +1,12 @@
+image:
+  repository: keshav72588/weather-app
+replicaCount: 3
+
+service:
+  port: 80
+  targetPort: 3000
+  type: LoadBalancer
+hpa:
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50

@@ -1,0 +1,99 @@
+---
+# Source: weather-app-helm/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-weather-app-helm
+  labels:
+    helm.sh/chart: weather-app-helm-0.1.0
+    app.kubernetes.io/name: weather-app-helm
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: weather-app-helm
+    app.kubernetes.io/instance: release-name
+---
+# Source: weather-app-helm/templates/weather-app-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: weather-app-helm-svc
+  labels:
+    app: weather-app-helm
+spec:
+  selector:
+    app: weather-app-helm
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+status:
+    loadBalancer: {}
+---
+# Source: weather-app-helm/templates/weather-app-deplyment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-weather-app-helm
+  labels:
+    app: weather-app-helm
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: weather-app-helm
+  template:
+    metadata:
+      labels:
+        app: weather-app-helm
+    spec:
+      containers:
+        - name: weather-app-helm
+          image: keshav72588/weather-app
+          ports:
+            - containerPort: 3000
+          env:
+            - name: REACT_APP_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secret-name
+                  key: api-key
+---
+# Source: weather-app-helm/templates/hpa.yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+ name: weather-app-helm-hpa
+spec:
+ scaleTargetRef:
+   apiVersion: apps/v1
+   kind: Deployment
+   name: weather-app-helm
+ minReplicas: 1
+ maxReplicas: 10
+ targetCPUUtilizationPercentage: 50
+---
+# Source: weather-app-helm/templates/my-secret.yaml
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: secret-name
+  namespace: default
+spec:
+  encryptedData:
+    api-key: AgA2eOeTSXTeWSbWRICETrRi3T6pxp6H48GLOqKGDUcCX6XbH6SX/DrZjIDWr57ckbIQDie5Lf/Ox5b4GOFtKCwJb0b7VozpDrdZKw0Jbk/b8NkSuBIgxbcjinPcKc4sa4M1yYin2nYJ1JunSfO5hvGoBkMp2XPjUTfPH+Nk3pHF4ulCS0TFh/wyrkNsJzxqxZXlws4ALzuGnOq46UfftYpFta+jtT0Niqvb8ZEohkcpkgS1RDW8da+MEfWBC8lkrDGLarSpHQID8hPYtYC+K0jWykw7yxmd1IPj+V+t2L9m9N2rokK1vecpgE6J74fAW83lQrtTYOsEXSVQIx+CWerv7wrsWLTXZr9cUT/T7aYHzR6+96VFfWdVEKHWbMCv6uj9f1p2nRZD+wlbQEkopzzjgAM0ov3EiWIKziS9NVJdae+v+YysKXUHD4UfY/rPPGZdsn6/d9ds0+0mRz5cax7MN8yXz5aFo3V2dolE4iUo0Itm4B4FEmtgi/nX4CJsYAOyjdO7AU2RqXPmhlSChJ7YDCjkwOAJMtOWnQXcMsGM4+IU31MHf0jKgiNSxSe2tz7QCEeCwHvE9GL+3Q1NCWjT/U/fnXTjdX6du01WBQDCFlta+dm9NBc4gWsBpHHzQ3cMt7n1igqBkTkFKogHywYTS75fPxFx6Kd9ZWqlf1caTCxByFTiWU55UjELvKFEcGJ8dcXLFTI1XlFRLxjzFpyviwN5baL3rU2qNH/cwtP8
+  template:
+    metadata:
+      creationTimestamp: null
+      name: secret-name
+      namespace: default

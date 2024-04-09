@@ -1,0 +1,71 @@
+/* Weather Component Styles */
+
+/* Container Styles */
+.weather-container {
+    margin: 20px;
+  }
+  
+  /* Form Styles */
+  .weather-form {
+    margin-bottom: 20px;
+  }
+  
+  .weather-input {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .weather-button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .weather-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Card Container Styles */
+  .weather-card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Card Styles */
+  .weather-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+  }
+  
+  .weather-heading {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .weather-data {
+    margin-top: 10px;
+  }
+  
+  .weather-data p {
+    margin-bottom: 5px;
+  }
+  
+  .weather-loading {
+    font-style: italic;
+    color: #666;
+  }
+  
+  .weather-error {
+    color: red;
+  }
+  

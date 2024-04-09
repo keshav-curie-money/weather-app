@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "weather-app-helm.fullname" . }}
+  labels:
+    app: {{ include "weather-app-helm.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "weather-app-helm.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "weather-app-helm.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}
+          ports:
+            - containerPort: 3000
+          env:
+            - name: REACT_APP_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secret-name
+                  key: api-key
